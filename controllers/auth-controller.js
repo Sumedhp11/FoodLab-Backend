@@ -1,34 +1,73 @@
+const { generateToken } = require("../helper/generateToken");
 const { User } = require("../models/user-model");
-
+const bcrypt = require("bcrypt");
 exports.createUser = async (req, res) => {
-  const user = new User(req.body);
+  const { password, name, email, phone } = req.query;
+  const hashPwd = await bcrypt.hash(password, 10);
+  console.log("7", hashPwd);
+  const data = {
+    password: hashPwd,
+    name: name,
+    email: email,
+    phone: phone,
+  };
+  console.log("12", data);
+  const checkExistEmail = await User.findOne({ email });
+  if (checkExistEmail) {
+    return res.status(400).json({
+      message: "Dublicate Found",
+    });
+  }
+  const user = User.create(data);
   try {
-    const doc = await user.save();
+    // const doc = await user.save();
     res.status(201).json({ message: "Succesfully user Created", data: doc });
   } catch (error) {
-    res.status(400).json(error);
+    return res.status(400).json(error);
   }
 };
 
 exports.loginUser = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email }).exec();
-    if (!user) {
-      res.status(401).json({ message: "No User found" });
-    } else if (user.password === req.body.password) {
-      res.status(200).json({
-        message: "User Found",
-        data: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          addresses: user.addresses,
-        },
+    const { email, password } = req.query;
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email & Password is required",
       });
-    } else {
-      res.status(401).json({ message: "Invalid Credentials" });
     }
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(404).json({
+        status: "failure",
+        code: 404,
+        message: "No User found",
+        data: [],
+      });
+    }
+    const comPwd = await bcrypt.compare(password, user.password);
+    if (!comPwd) {
+      return res.status(404).json({
+        status: "failure",
+        code: 404,
+        message: "Pwd doesnt match",
+      });
+    }
+    const token = generateToken(user._id);
+    const selectedData = [];
+    const data = {
+      token: token,
+      ...user.toObject(),
+    };
+    selectedData.push(data);
+
+    const cleanedData = selectedData.map(({ password, ...rest }) => rest);
+
+    res.status(200).json({
+      message: "User Found",
+      data: cleanedData,
+    });
   } catch (error) {
-    res.status(400).json(error);
+    console.log("50", error);
+    return res.status(500).json(error);
   }
 };
