@@ -70,7 +70,7 @@ exports.scrapeSwiggyResutaurantDataWithUrl = async (req, res) => {
   }
 };
 
-exports.fetchProductAndInsertIntoDBFromSwiggyMultiple = async (res) => {
+exports.fetchProductAndInsertIntoDBFromSwiggyMultiple = async (req, res) => {
   try {
     const restaurantDetails = await Restaurant.find();
 
