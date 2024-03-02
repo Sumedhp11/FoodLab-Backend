@@ -15,13 +15,13 @@ exports.createUser = async (req, res) => {
   const checkExistEmail = await User.findOne({ email });
   if (checkExistEmail) {
     return res.status(400).json({
-      message: "Dublicate Found",
+      message: "Duplicate Found",
     });
   }
   const user = User.create(data);
   try {
     // const doc = await user.save();
-    res.status(201).json({ message: "Succesfully user Created", data: doc });
+    res.status(201).json({ message: "Succesfully user Created", data: user });
   } catch (error) {
     return res.status(400).json(error);
   }
