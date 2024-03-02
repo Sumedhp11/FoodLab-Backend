@@ -6,7 +6,7 @@ const UserSchema = new Schema({
   email: { type: String, required: true, unique: true },
   phone: { type: Number, required: true },
   password: { type: String, required: true },
-  addresses: { type: [Schema.Types.Mixed], required: true },
+  addresses: { type: [Schema.Types.Mixed] },
   orders: { type: [Schema.Types.Mixed] },
   orderHistory: { type: [Schema.Types.Mixed] },
 });
