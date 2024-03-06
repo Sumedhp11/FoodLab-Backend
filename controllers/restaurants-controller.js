@@ -34,16 +34,18 @@ const getAllRestaurants = async (req, res) => {
 const getMenu = async (req, res) => {
   try {
     const { resId } = req.query;
-    console.log(resId, "31");
+    const restaurant = await Restaurant.find({ id: resId });
     const menuList = await dish.find({ restaurantId: resId });
     // console.log(menuList);
     if (!menuList) {
       return res.status(404).json({ error: "Menu not found" });
     }
-
     return res.status(200).json({
       status: "Fetched Menu Sucessfully",
-      data: menuList,
+      data: {
+        ResDetails: restaurant,
+        Menu: menuList,
+      },
     });
   } catch (error) {
     console.error(error);
