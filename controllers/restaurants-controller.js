@@ -62,7 +62,7 @@ const getMenu = async (req, res) => {
       status: "Success",
       data: {
         ResDetails: restaurant,
-        Menu: { menuList, totalCount: totalCount },
+        Menu: { menuList, totalCount: totalCount, page: page },
       },
     });
   } catch (error) {
