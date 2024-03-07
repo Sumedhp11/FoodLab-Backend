@@ -14,7 +14,7 @@ const getAllRestaurants = async (req, res) => {
       query = { name: { $regex: search, $options: "i" } };
     }
     if (resId) {
-      query._id = resId; // Filter by restaurant ID
+      query.id = resId; // Filter by restaurant ID
     }
 
     const totalItems = await Restaurant.countDocuments(query);
