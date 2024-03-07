@@ -74,8 +74,6 @@ const getResMenu = async (req, res) => {
   }
 };
 
-module.exports = { getRestaurantById, getResMenu };
-
 module.exports = {
   getAllRestaurants,
   getResMenu,
