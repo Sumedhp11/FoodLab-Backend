@@ -67,7 +67,6 @@ const getMenu = async (req, res) => {
         ResDetails: restaurant,
         Menu: {
           menuList,
-          totalCount: totalCount,
           page: parseInt(pageNumber),
           totalPages: totalPages,
         },
