@@ -31,7 +31,26 @@ const getAllRestaurants = async (req, res) => {
   }
 };
 
-const getMenu = async (req, res) => {
+const getRestaurantById = async (req, res) => {
+  try {
+    const { resId } = req.query;
+    const restaurant = await Restaurant.findOne({ id: resId });
+    if (!restaurant) {
+      return res.status(404).json({ error: "Restaurant not found" });
+    }
+    return res.status(200).json({
+      status: "Success",
+      data: {
+        ResDetails: restaurant,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getResMenu = async (req, res) => {
   try {
     const { resId } = req.query;
     const { search, page } = req.query;
@@ -42,11 +61,6 @@ const getMenu = async (req, res) => {
     const pageSize = 20;
     const pageNumber = parseInt(page) || 1;
     const skip = (pageNumber - 1) * pageSize;
-
-    const restaurant = await Restaurant.findOne({ id: resId });
-    if (!restaurant) {
-      return res.status(404).json({ error: "Restaurant not found" });
-    }
 
     const totalCount = await dish.countDocuments({
       restaurantId: resId,
@@ -64,7 +78,6 @@ const getMenu = async (req, res) => {
     return res.status(200).json({
       status: "Success",
       data: {
-        ResDetails: restaurant,
         Menu: {
           menuList,
           page: parseInt(pageNumber),
@@ -77,6 +90,8 @@ const getMenu = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+module.exports = { getRestaurantById, getResMenu };
 
 module.exports = {
   getAllRestaurants,
