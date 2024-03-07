@@ -15,7 +15,6 @@ const restaurantSchema = new mongoose.Schema({
   },
   locality: {
     type: String,
-    required: true,
   },
   areaName: {
     type: String,
@@ -45,7 +44,6 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  
 });
 
 const Restaurant = mongoose.model("Restaurant", restaurantSchema);
