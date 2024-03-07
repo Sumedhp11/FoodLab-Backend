@@ -40,7 +40,7 @@ const getMenu = async (req, res) => {
       query = { name: { $regex: search, $options: "i" } };
     }
     const pageSize = 20;
-    const pageNumber = parseInt(page) || 0;
+    const pageNumber = parseInt(page) || 1;
     const skip = (pageNumber - 1) * pageSize;
 
     const restaurant = await Restaurant.findOne({ id: resId });
