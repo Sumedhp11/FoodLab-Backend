@@ -1,11 +1,10 @@
 const dish = require("../models/dish-model");
 const Restaurant = require("../models/restaurant-model");
 
-const ITEMS_PER_PAGE = 10;
-
 const getAllRestaurants = async (req, res) => {
   try {
     const search = req.query.search;
+    const resId = req.query.resId; // Add resId parameter
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
@@ -13,6 +12,9 @@ const getAllRestaurants = async (req, res) => {
     let query = {};
     if (search) {
       query = { name: { $regex: search, $options: "i" } };
+    }
+    if (resId) {
+      query._id = resId; // Filter by restaurant ID
     }
 
     const totalItems = await Restaurant.countDocuments(query);
@@ -28,25 +30,6 @@ const getAllRestaurants = async (req, res) => {
   } catch (error) {
     console.error("Error fetching restaurants:", error.message);
     return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const getRestaurantById = async (req, res) => {
-  try {
-    const { resId } = req.query;
-    const restaurant = await Restaurant.findOne({ id: resId });
-    if (!restaurant) {
-      return res.status(404).json({ error: "Restaurant not found" });
-    }
-    return res.status(200).json({
-      status: "Success",
-      data: {
-        ResDetails: restaurant,
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -95,6 +78,5 @@ module.exports = { getRestaurantById, getResMenu };
 
 module.exports = {
   getAllRestaurants,
-  getRestaurantById,
   getResMenu,
 };
