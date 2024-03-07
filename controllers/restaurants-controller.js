@@ -34,17 +34,36 @@ const getAllRestaurants = async (req, res) => {
 const getMenu = async (req, res) => {
   try {
     const { resId } = req.query;
-    const restaurant = await Restaurant.find({ id: resId });
-    const menuList = await dish.find({ restaurantId: resId });
-    // console.log(menuList);
-    if (!menuList) {
-      return res.status(404).json({ error: "Menu not found" });
+    const { search, page } = req.query;
+    let query = {};
+    if (search) {
+      query = { name: { $regex: search, $options: "i" } };
     }
+    const pageSize = 20;
+    const pageNumber = parseInt(page) || 1;
+    const skip = (pageNumber - 1) * pageSize;
+
+    const restaurant = await Restaurant.findOne({ id: resId });
+    if (!restaurant) {
+      return res.status(404).json({ error: "Restaurant not found" });
+    }
+
+    const totalCount = await dish.countDocuments({
+      restaurantId: resId,
+      ...query,
+    });
+    // Fetch menu list with pagination
+    const menuList = await dish
+      .find({ restaurantId: resId, ...query })
+      .skip(skip)
+      .limit(pageSize);
+
     return res.status(200).json({
-      status: "Fetched Menu Sucessfully",
+      status: "Success",
       data: {
         ResDetails: restaurant,
         Menu: menuList,
+        totalCount: totalCount,
       },
     });
   } catch (error) {

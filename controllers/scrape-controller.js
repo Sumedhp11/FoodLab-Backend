@@ -84,28 +84,35 @@ exports.fetchProductAndInsertIntoDBFromSwiggyMultiple = async (req, res) => {
         },
       });
 
-      // Extract relevant data from the response
-      const items =
-        response?.data?.data?.cards?.[2]?.groupedCard?.cardGroupMap?.REGULAR
-          ?.cards?.[2]?.card?.card?.itemCards || [];
+      const cards =
+        response?.data?.data?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR
+          ?.cards || [];
 
-      // Loop through each item and insert into the database if not already existing
-      for (const item of items) {
-        // Check if the dish already exists in the database
-        const existingDish = await dishModel.findOne({
-          dishId: item.card.info.id,
-        });
+      for (const card of cards) {
+        // Check if the card contains itemCards
+        if (card?.card?.card.itemCards) {
+          const items = card?.card?.card?.itemCards || [];
 
-        // If dish doesn't exist, insert into the database
-        if (!existingDish) {
-          await dishModel.create({
-            name: item.card.info.name,
-            restaurantId: restaurant.id,
-            dishId: item.card.info.id,
-            description: item.card.info.description,
-            mrp: item.card.info.defaultPrice || item.card.info.price,
-            isVeg: item.card.info.isVeg,
-          });
+          for (const item of items) {
+            // Check if the dish already exists in the database
+            const existingDish = await dishModel.findOne({
+              dishId: item?.card.info?.id,
+            });
+
+            // If dish doesn't exist, insert into the database
+            if (!existingDish) {
+              // console.log(restaurant, "104");
+              await dishModel.create({
+                name: item.card.info.name,
+                image: item.card.info.imageId,
+                restaurantId: restaurant.id,
+                dishId: item.card.info.id,
+                description: item.card.info.description,
+                mrp: item.card.info.defaultPrice || item.card.info.price,
+                isVeg: item.card.info.isVeg,
+              });
+            }
+          }
         }
       }
     }
@@ -113,6 +120,46 @@ exports.fetchProductAndInsertIntoDBFromSwiggyMultiple = async (req, res) => {
     return res.status(200).json({
       status: "Success",
       message: "Data inserted successfully",
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({
+      error: "Internal server error",
+    });
+  }
+};
+
+exports.removeDuplicateRestaurants = async (req, res) => {
+  try {
+    // Find all restaurants
+    const allRestaurants = await Restaurant.find();
+
+    // Initialize an object to store unique restaurant names
+    const uniqueRestaurantNames = {};
+
+    // Filter out duplicate restaurants
+    const uniqueRestaurants = allRestaurants.filter((restaurant) => {
+      if (uniqueRestaurantNames[restaurant.name]) {
+        // If the restaurant name already exists, it's a duplicate
+        return false;
+      } else {
+        // If the restaurant name doesn't exist, add it to the object
+        uniqueRestaurantNames[restaurant.name] = true;
+        return true;
+      }
+    });
+
+    // Remove the duplicate restaurants from the database
+    await Restaurant.deleteMany({
+      name: { $in: allRestaurants.map((restaurant) => restaurant.name) },
+    });
+
+    // Insert the unique restaurants back into the database
+    await Restaurant.insertMany(uniqueRestaurants);
+
+    return res.status(200).json({
+      status: "Success",
+      message: "Duplicate restaurants removed successfully",
     });
   } catch (error) {
     console.error("Error:", error);

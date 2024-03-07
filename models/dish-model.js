@@ -4,7 +4,7 @@ const dishSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
     description: { type: String, default: "" },
-    // id: { type: String, default: "" },
+    image: { type: String },
     mrp: { type: Number, required: true },
     dishId: { type: String, required: true },
     restaurantId: { type: Number, required: true },
