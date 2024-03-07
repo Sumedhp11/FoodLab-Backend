@@ -61,11 +61,9 @@ const getResMenu = async (req, res) => {
     return res.status(200).json({
       status: "Success",
       data: {
-        Menu: {
-          menuList,
-          page: parseInt(pageNumber),
-          totalPages: totalPages,
-        },
+        menu: menuList,
+        page: parseInt(pageNumber),
+        totalPages: totalPages,
       },
     });
   } catch (error) {
