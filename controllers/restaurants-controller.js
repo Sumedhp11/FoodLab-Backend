@@ -52,6 +52,9 @@ const getMenu = async (req, res) => {
       restaurantId: resId,
       ...query,
     });
+
+    const totalPages = Math.ceil(totalCount / pageSize);
+
     // Fetch menu list with pagination
     const menuList = await dish
       .find({ restaurantId: resId, ...query })
@@ -62,7 +65,12 @@ const getMenu = async (req, res) => {
       status: "Success",
       data: {
         ResDetails: restaurant,
-        Menu: { menuList, totalCount: totalCount, page: parseInt(pageNumber) },
+        Menu: {
+          menuList,
+          totalCount: totalCount,
+          page: parseInt(pageNumber),
+          totalPages: totalPages,
+        },
       },
     });
   } catch (error) {
