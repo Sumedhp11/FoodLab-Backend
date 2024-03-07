@@ -95,5 +95,6 @@ module.exports = { getRestaurantById, getResMenu };
 
 module.exports = {
   getAllRestaurants,
-  getMenu,
+  getRestaurantById,
+  getResMenu,
 };
