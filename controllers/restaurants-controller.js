@@ -40,7 +40,7 @@ const getMenu = async (req, res) => {
       query = { name: { $regex: search, $options: "i" } };
     }
     const pageSize = 20;
-    const pageNumber = parseInt(page) || 1;
+    const pageNumber = parseInt(page) || 0;
     const skip = (pageNumber - 1) * pageSize;
 
     const restaurant = await Restaurant.findOne({ id: resId });
@@ -62,7 +62,7 @@ const getMenu = async (req, res) => {
       status: "Success",
       data: {
         ResDetails: restaurant,
-        Menu: { menuList, totalCount: totalCount, page: page },
+        Menu: { menuList, totalCount: totalCount, page: parseInt(pageNumber) },
       },
     });
   } catch (error) {
