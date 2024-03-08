@@ -9,6 +9,7 @@ const UserSchema = new Schema({
   addresses: { type: [Schema.Types.Mixed] },
   orders: { type: [Schema.Types.Mixed] },
   orderHistory: { type: [Schema.Types.Mixed] },
+  cart: { type: [Schema.Types.Mixed] }, // Add cart field
 });
 
 const virtual = UserSchema.virtual("id");

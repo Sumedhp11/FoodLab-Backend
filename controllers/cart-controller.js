@@ -21,6 +21,24 @@ const addtoCart = async (req, res) => {
     res.status(400).json({ error: "Failed to add item to cart" });
   }
 };
+
+const getCartByUserId = async (req, res) => {
+  const { userId } = req.query;
+  try {
+    const CartItems = await Cart.find({ user: userId });
+    return res.status(200).json({
+      status: 200,
+      message: "Cart Fetched Sucessfully",
+      data: CartItems,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      error: "Failed to Fetch Cart",
+    });
+  }
+};
 module.exports = {
   addtoCart,
+  getCartByUserId,
 };
