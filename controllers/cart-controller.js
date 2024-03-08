@@ -52,7 +52,9 @@ const addtoCart = async (req, res) => {
 const getCartByUserId = async (req, res) => {
   const { userId } = req.query;
   try {
-    const CartItems = await Cart.find({ user: userId });
+    const CartItems = await Cart.find({ user: userId }).populate({
+      path: "dish",
+    });
     console.log(CartItems);
     return res.status(200).json({
       status: 200,
