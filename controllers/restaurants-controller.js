@@ -1,4 +1,4 @@
-const dish = require("../models/dish-model");
+const { Dish } = require("../models/dish-model");
 const Restaurant = require("../models/restaurant-model");
 
 const getAllRestaurants = async (req, res) => {
@@ -45,7 +45,7 @@ const getResMenu = async (req, res) => {
     const pageNumber = parseInt(page) || 1;
     const skip = (pageNumber - 1) * pageSize;
 
-    const totalCount = await dish.countDocuments({
+    const totalCount = await Dish.countDocuments({
       restaurantId: resId,
       ...query,
     });
@@ -53,8 +53,7 @@ const getResMenu = async (req, res) => {
     const totalPages = Math.ceil(totalCount / pageSize);
 
     // Fetch menu list with pagination
-    const menuList = await dish
-      .find({ restaurantId: resId, ...query })
+    const menuList = await Dish.find({ restaurantId: resId, ...query })
       .skip(skip)
       .limit(pageSize);
 
