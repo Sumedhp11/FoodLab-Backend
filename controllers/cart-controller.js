@@ -10,7 +10,7 @@ const addtoCart = async (req, res) => {
     });
 
     if (existingCartItem) {
-      existingCartItem.quantity += parseInt(quantity);
+      existingCartItem.quantity = parseInt(quantity);
       await existingCartItem.save();
 
       res.status(200).json({
