@@ -55,11 +55,19 @@ const getCartByUserId = async (req, res) => {
     const CartItems = await Cart.find({ user: userId }).populate({
       path: "dish",
     });
-    console.log(CartItems);
+    let totalPrice = 0;
+    CartItems.forEach((item) => {
+      console.log(item);
+      totalPrice += (item.dish.mrp / 100) * item.quantity;
+    });
+    console.log(totalPrice);
     return res.status(200).json({
       status: 200,
       message: "Cart Fetched Sucessfully",
-      data: CartItems,
+      data: {
+        cartitems: CartItems,
+        totalPrice: totalPrice,
+      },
     });
   } catch (error) {
     console.log(error);
