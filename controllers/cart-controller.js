@@ -4,18 +4,33 @@ const addtoCart = async (req, res) => {
   const { userId, quantity, dishId } = req.query;
 
   try {
-    const newCart = new Cart({
+    const existingCartItem = await Cart.findOne({
       user: userId,
-      quantity: quantity,
       dishes: dishId,
     });
 
-    await newCart.save();
+    if (existingCartItem) {
+      existingCartItem.quantity += parseInt(quantity);
+      await existingCartItem.save();
 
-    res.status(201).json({
-      message: "Cart item added successfully",
-      cart: newCart,
-    });
+      res.status(200).json({
+        message: "Cart item quantity updated successfully",
+        cart: existingCartItem,
+      });
+    } else {
+      const newCart = new Cart({
+        user: userId,
+        quantity: quantity,
+        dishes: dishId,
+      });
+
+      await newCart.save();
+
+      res.status(201).json({
+        message: "Cart item added successfully",
+        cart: newCart,
+      });
+    }
   } catch (error) {
     console.error("Error adding item to cart:", error);
     res.status(400).json({ error: "Failed to add item to cart" });
