@@ -1,5 +1,5 @@
 const { generateToken } = require("../helper/generateToken");
-const { User } = require("../models/user-model");
+const { User, User } = require("../models/user-model");
 const bcrypt = require("bcrypt");
 exports.createUser = async (req, res) => {
   const { password, name, email, phone } = req.body;
@@ -62,6 +62,20 @@ exports.loginUser = async (req, res) => {
     res.status(200).json({
       message: "User Found",
       data: cleanedData,
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+exports.getUserById = async (req, res) => {
+  const { userId } = req.query;
+  try {
+    const User = User.findOne({ _id: userId });
+
+    return res.status(200).json({
+      message: "User Fetched Sucessfully",
+      data: User,
     });
   } catch (error) {
     return res.status(500).json(error);
