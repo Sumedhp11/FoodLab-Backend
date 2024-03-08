@@ -4,6 +4,18 @@ const addtoCart = async (req, res) => {
   const { userId, quantity, dishId } = req.query;
 
   try {
+    if (parseInt(quantity) === 0) {
+      await Cart.findOneAndDelete({
+        user: userId,
+        dishes: dishId,
+      });
+
+      res.status(200).json({
+        message: "Cart item removed successfully",
+      });
+      return;
+    }
+
     const existingCartItem = await Cart.findOne({
       user: userId,
       dishes: dishId,
@@ -32,8 +44,8 @@ const addtoCart = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error adding item to cart:", error);
-    res.status(400).json({ error: "Failed to add item to cart" });
+    console.error("Error updating/removing item from cart:", error);
+    res.status(400).json({ error: "Failed to update/remove item from cart" });
   }
 };
 
