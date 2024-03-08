@@ -71,11 +71,11 @@ exports.loginUser = async (req, res) => {
 exports.getUserById = async (req, res) => {
   const { userId } = req.query;
   try {
-    const User = User.findOne({ _id: userId });
+    const user = User.findOne({ _id: userId });
 
     return res.status(200).json({
       message: "User Fetched Sucessfully",
-      data: User,
+      data: user,
     });
   } catch (error) {
     return res.status(500).json(error);
