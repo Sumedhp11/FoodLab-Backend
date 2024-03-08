@@ -1,5 +1,5 @@
 const axios = require("axios");
-const dishModel = require("../models/dish-model");
+const { Dish } = require("../models/dish-model");
 const Restaurant = require("../models/restaurant-model");
 
 exports.scrapeSwiggyResutaurantDataWithUrl = async (req, res) => {
@@ -95,14 +95,14 @@ exports.fetchProductAndInsertIntoDBFromSwiggyMultiple = async (req, res) => {
 
           for (const item of items) {
             // Check if the dish already exists in the database
-            const existingDish = await dishModel.findOne({
+            const existingDish = await Dish.findOne({
               dishId: item?.card.info?.id,
             });
 
             // If dish doesn't exist, insert into the database
             if (!existingDish) {
               // console.log(restaurant, "104");
-              await dishModel.create({
+              await Dish.create({
                 name: item.card.info.name,
                 image: item.card.info.imageId,
                 restaurantId: restaurant.id,

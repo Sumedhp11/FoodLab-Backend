@@ -7,7 +7,7 @@ const addtoCart = async (req, res) => {
     if (parseInt(quantity) === 0) {
       await Cart.findOneAndDelete({
         user: userId,
-        dishes: dishId,
+        dish: dishId,
       });
 
       res.status(200).json({
@@ -18,7 +18,7 @@ const addtoCart = async (req, res) => {
 
     const existingCartItem = await Cart.findOne({
       user: userId,
-      dishes: dishId,
+      dish: dishId,
     });
 
     if (existingCartItem) {
@@ -33,7 +33,7 @@ const addtoCart = async (req, res) => {
       const newCart = new Cart({
         user: userId,
         quantity: quantity,
-        dishes: dishId,
+        dish: dishId,
       });
 
       await newCart.save();
@@ -53,6 +53,7 @@ const getCartByUserId = async (req, res) => {
   const { userId } = req.query;
   try {
     const CartItems = await Cart.find({ user: userId });
+    console.log(CartItems);
     return res.status(200).json({
       status: 200,
       message: "Cart Fetched Sucessfully",
@@ -65,6 +66,7 @@ const getCartByUserId = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   addtoCart,
   getCartByUserId,

@@ -15,4 +15,4 @@ const dishSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("dish", dishSchema);
+exports.Dish = mongoose.model("Dish", dishSchema);

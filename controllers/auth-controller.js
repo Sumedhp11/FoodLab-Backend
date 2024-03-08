@@ -64,20 +64,7 @@ exports.loginUser = async (req, res) => {
       data: cleanedData,
     });
   } catch (error) {
-    return res.status(500).json(error);
-  }
-};
-
-exports.getUserById = async (req, res) => {
-  const { userId } = req.query;
-  try {
-    const user = User.findOne({ _id: userId });
-
-    return res.status(200).json({
-      message: "User Fetched Sucessfully",
-      data: user,
-    });
-  } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 };

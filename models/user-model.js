@@ -6,10 +6,9 @@ const UserSchema = new Schema({
   email: { type: String, required: true, unique: true },
   phone: { type: Number, required: true },
   password: { type: String, required: true },
-  addresses: { type: [Schema.Types.Mixed] },
-  orders: { type: [Schema.Types.Mixed] },
-  orderHistory: { type: [Schema.Types.Mixed] },
-  cart: { type: [Schema.Types.Mixed] }, // Add cart field
+  addresses: [{ type: Schema.Types.ObjectId, ref: "Address" }],
+  orders: [{ type: Schema.Types.ObjectId, ref: "Order" }],
+  orderHistory: [{ type: Schema.Types.ObjectId, ref: "OrderHistory" }],
 });
 
 const virtual = UserSchema.virtual("id");

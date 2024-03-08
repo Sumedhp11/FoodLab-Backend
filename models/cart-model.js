@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { User } = require("./user-model");
 
 const CartSchema = new mongoose.Schema(
   {
@@ -7,9 +6,9 @@ const CartSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    dishes: {
+    dish: {
       type: mongoose.Types.ObjectId,
-      ref: "dish",
+      ref: "Dish",
       required: true,
     },
     user: {
@@ -22,7 +21,7 @@ const CartSchema = new mongoose.Schema(
 );
 
 const virtual = CartSchema.virtual("id");
-virtual.get(function (doc) {
+virtual.get(function () {
   return this._id;
 });
 
