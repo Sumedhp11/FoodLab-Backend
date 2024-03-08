@@ -7,7 +7,7 @@ const dishSchema = mongoose.Schema(
     image: { type: String },
     mrp: { type: Number, required: true },
     dishId: { type: String, required: true },
-    restaurantId: { type: Number, required: true },
+    restaurantId: { type: Number, required: true, ref: "restaurant" },
     isVeg: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false },

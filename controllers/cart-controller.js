@@ -57,10 +57,9 @@ const getCartByUserId = async (req, res) => {
     });
     let totalPrice = 0;
     CartItems.forEach((item) => {
-      console.log(item);
       totalPrice += (item.dish.mrp / 100) * item.quantity;
     });
-    console.log(totalPrice);
+
     return res.status(200).json({
       status: 200,
       message: "Cart Fetched Sucessfully",
