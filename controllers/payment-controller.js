@@ -68,8 +68,22 @@ exports.generateUPIQRCode = async (req, res) => {
 
 exports.handleUPIPaymentCallback = async (req, res) => {
   try {
-    // Handle UPI payment callback
-    res.redirect("/congrats"); // Redirect to congratulations page
+    const paymentId = req.body.razorpay_payment_id;
+    const orderId = req.body.razorpay_order_id;
+    const paymentSignature = req.body.razorpay_signature;
+
+    // Verify the payment signature
+    const isSignatureValid = razorpay.validateWebhookSignature(
+      req.rawBody,
+      paymentSignature,
+      orderId
+    );
+
+    if (!isSignatureValid) {
+      return res.status(400).send("Invalid signature");
+    }
+
+    res.redirect("/congrats");
   } catch (error) {
     console.error("Error handling UPI payment callback:", error);
     res.status(500).json({ message: "Internal server error" });

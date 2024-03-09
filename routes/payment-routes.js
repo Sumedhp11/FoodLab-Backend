@@ -4,7 +4,6 @@ const {
   initiateNetbankingPayment,
   verifyNetbankingPayment,
   generateUPIQRCode,
-  handleUPIPaymentCallback,
 } = require("../controllers/payment-controller");
 
 // Route for initiating Netbanking payment
@@ -17,6 +16,5 @@ router.post("/netbanking/callback", verifyNetbankingPayment);
 router.post("/upi/qr", generateUPIQRCode);
 
 // Route for handling UPI payment callback
-router.post("/upi/callback", handleUPIPaymentCallback);
 
 exports.router = router;

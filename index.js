@@ -10,12 +10,21 @@ const paymentRouter = require("./routes/payment-routes");
 const { connectDb, disconnectDb } = require("./config/dbconnection");
 const morgan = require("morgan");
 
+const {
+  handleUPIPaymentCallback,
+} = require("./controllers/payment-controller");
+
 connectDb();
-port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 server.use(morgan("dev"));
 
 server.use(express.json());
 server.use(cors());
+
+// Define the webhook endpoint for handling UPI payment callback
+server.post("/upi-payment-callback", handleUPIPaymentCallback);
+
+// Landing page route
 server.get("/", (req, res) => {
   res.send(`<!DOCTYPE html>
     <html lang="en">
@@ -33,6 +42,7 @@ server.get("/", (req, res) => {
    </html>`);
 });
 
+// API status route
 server.get("/api", (req, res) => {
   console.log("API is working");
   res.send(`
@@ -51,6 +61,8 @@ server.get("/api", (req, res) => {
   </html>
 `);
 });
+
+// Mount routers
 server.use("/auth", authRouter.router);
 server.use("/restaurants", resRouter.router);
 server.use("/", scrapeRouter);
@@ -60,6 +72,8 @@ server.use("/payment", paymentRouter.router);
 server.listen(port, () => {
   console.log("Server Started at " + port);
 });
+
+// Graceful shutdown
 process.on("SIGINT", async () => {
   await disconnectDb();
   process.exit(0);
