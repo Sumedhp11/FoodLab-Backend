@@ -6,6 +6,7 @@ const authRouter = require("./routes/auth-routes");
 const resRouter = require("./routes/restaurant-routes");
 const scrapeRouter = require("./routes/scrape-route");
 const cartRouter = require("./routes/cart-routes");
+const paymentRouter = require("./routes/payment-routes");
 const { connectDb, disconnectDb } = require("./config/dbconnection");
 const morgan = require("morgan");
 
@@ -54,6 +55,7 @@ server.use("/auth", authRouter.router);
 server.use("/restaurants", resRouter.router);
 server.use("/", scrapeRouter);
 server.use("/cart", cartRouter.router);
+server.use("/payment", paymentRouter.router);
 
 server.listen(port, () => {
   console.log("Server Started at " + port);
