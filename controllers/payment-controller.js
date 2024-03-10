@@ -1,4 +1,4 @@
-import { instance } from "../index.js";
+import instance  from "../index.js";
 import crypto from "crypto";
 
 export const checkout = async (req, res) => {
