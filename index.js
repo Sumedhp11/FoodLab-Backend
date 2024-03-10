@@ -1,3 +1,5 @@
+import Razorpay from "razorpay";
+
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -9,10 +11,6 @@ const cartRouter = require("./routes/cart-routes");
 const paymentRouter = require("./routes/payment-routes");
 const { connectDb, disconnectDb } = require("./config/dbconnection");
 const morgan = require("morgan");
-
-const {
-  handleUPIPaymentCallback,
-} = require("./controllers/payment-controller");
 
 connectDb();
 const port = process.env.PORT || 5000;
@@ -67,8 +65,13 @@ server.use("/auth", authRouter.router);
 server.use("/restaurants", resRouter.router);
 server.use("/", scrapeRouter);
 server.use("/cart", cartRouter.router);
-server.use("/payment", paymentRouter.router);
+server.use("/api", paymentRouter.router);
+server.use(express.urlencoded({ extended: true }));
 
+export const instance = new Razorpay({
+  key_id: RAZORPAY_KEY_ID,
+  key_secret: RAZORPAY_KEY_SECRET,
+});
 server.listen(port, () => {
   console.log("Server Started at " + port);
 });

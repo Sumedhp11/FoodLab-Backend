@@ -1,91 +1,40 @@
-const Razorpay = require("razorpay");
-const qr = require("qrcode");
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+const { instance } = require("../index");
+const crypto = require("crypto");
 
-exports.initiateNetbankingPayment = async (req, res) => {
+exports.checkout = async (req, res) => {
   try {
-    const { userId, amount } = req.body;
-
-    const order = await razorpay.orders.create({
-      amount: amount * 100,
+    const options = {
+      amount: Number(req.body.amount * 100),
       currency: "INR",
-      payment_capture: 1,
+    };
+    const order = await instance.orders.create(options);
+    return res.status(200).json({ sucess: true, data: order });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      message: "Failed",
+      error,
     });
-
-    res.json({ orderId: order.id });
-  } catch (error) {
-    console.error("Error initiating Netbanking payment:", error);
-    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-exports.verifyNetbankingPayment = async (req, res) => {
-  try {
-    const paymentSignature = req.body["razorpay_signature"];
-    const orderId = req.body["razorpay_order_id"];
-    const paymentId = req.body["razorpay_payment_id"];
+exports.paymentVerification = async (req, res) => {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    req.body;
+  const body = razorpay_order_id + "|" + razorpay_payment_id;
+  const expectedSignature = crypto
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+    .update(body.toString())
+    .digest("hex");
+  const isAuthentic = expectedSignature === razorpay_signature;
 
-    const isSignatureValid = razorpay.validateWebhookSignature(
-      req.rawBody,
-      paymentSignature,
-      orderId
+  if (isAuthentic) {
+    res.redirect(
+      `http://localhost:5173/congrats?reference=${razorpay_payment_id}`
     );
-
-    if (!isSignatureValid) {
-      return res.status(400).send("Invalid signature");
-    }
-
-    res.status(200).send("Payment successful");
-  } catch (error) {
-    console.error("Error verifying Netbanking payment:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-exports.generateUPIQRCode = async (req, res) => {
-  try {
-    const { amount } = req.body;
-    const upiId = "sumedhpawar8966-1@okaxis"; // Replace with your UPI ID
-    const qrCodeData = `upi://pay?pa=${encodeURIComponent(
-      upiId
-    )}&am=${amount}&cu=INR`;
-
-    qr.toDataURL(qrCodeData, (err, qrCodeUrl) => {
-      if (err) {
-        console.error("Error generating UPI QR code:", err);
-        return res.status(500).json({ message: "Internal server error" });
-      }
-      res.json({ qrCodeImageUrl: qrCodeUrl });
+  } else {
+    res.status(400).json({
+      sucess: false,
     });
-  } catch (error) {
-    console.error("Error generating UPI QR code:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-exports.handleUPIPaymentCallback = async (req, res) => {
-  try {
-    const paymentId = req.body.razorpay_payment_id;
-    const orderId = req.body.razorpay_order_id;
-    const paymentSignature = req.body.razorpay_signature;
-
-    // Verify the payment signature
-    const isSignatureValid = razorpay.validateWebhookSignature(
-      req.rawBody,
-      paymentSignature,
-      orderId
-    );
-
-    if (!isSignatureValid) {
-      return res.status(400).send("Invalid signature");
-    }
-
-    res.redirect("/congrats");
-  } catch (error) {
-    console.error("Error handling UPI payment callback:", error);
-    res.status(500).json({ message: "Internal server error" });
   }
 };
