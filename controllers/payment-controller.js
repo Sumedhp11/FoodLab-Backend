@@ -1,24 +1,26 @@
-const { instance } = require("../index");
-const crypto = require("crypto");
+import { razorpayInstance } from "../index.js";
+import crypto from "crypto";
 
-exports.checkout = async (req, res) => {
+export const checkout = async (req, res) => {
+  const { amount } = req.body;
   try {
     const options = {
-      amount: Number(req.body.amount * 100),
+      amount: Number(amount * 100),
       currency: "INR",
     };
-    const order = await instance.orders.create(options);
-    return res.status(200).json({ sucess: true, data: order });
+
+    const order = await razorpayInstance.orders.create(options);
+    return res.status(200).json({ success: true, data: order });
   } catch (error) {
     console.log(error);
     res.status(400).json({
       message: "Failed",
-      error,
+      error: error.message,
     });
   }
 };
 
-exports.paymentVerification = async (req, res) => {
+export const paymentVerification = async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;
   const body = razorpay_order_id + "|" + razorpay_payment_id;
@@ -34,7 +36,7 @@ exports.paymentVerification = async (req, res) => {
     );
   } else {
     res.status(400).json({
-      sucess: false,
+      success: false,
     });
   }
 };

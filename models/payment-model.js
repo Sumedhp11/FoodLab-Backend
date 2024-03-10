@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema({
   razorpay_order_id: {
@@ -11,3 +11,5 @@ const paymentSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+export default mongoose.model("Payment", paymentSchema);

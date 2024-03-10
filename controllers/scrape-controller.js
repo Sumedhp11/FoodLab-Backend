@@ -1,8 +1,8 @@
-const axios = require("axios");
-const { Dish } = require("../models/dish-model");
-const Restaurant = require("../models/restaurant-model");
+import axios from "axios";
+import Dish from "../models/dish-model.js";
+import Restaurant from "../models/restaurant-model.js";
 
-exports.scrapeSwiggyResutaurantDataWithUrl = async (req, res) => {
+export const scrapeSwiggyResutaurantDataWithUrl = async (req, res) => {
   try {
     const url =
       "https://www.swiggy.com/dapi/restaurants/list/v5?lat=19.0759837&lng=72.8776559&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING";
@@ -70,7 +70,10 @@ exports.scrapeSwiggyResutaurantDataWithUrl = async (req, res) => {
   }
 };
 
-exports.fetchProductAndInsertIntoDBFromSwiggyMultiple = async (req, res) => {
+export const fetchProductAndInsertIntoDBFromSwiggyMultiple = async (
+  req,
+  res
+) => {
   try {
     const restaurantDetails = await Restaurant.find();
 
@@ -129,7 +132,7 @@ exports.fetchProductAndInsertIntoDBFromSwiggyMultiple = async (req, res) => {
   }
 };
 
-exports.removeDuplicateRestaurants = async (req, res) => {
+export const removeDuplicateRestaurants = async (req, res) => {
   try {
     // Find all restaurants
     const allRestaurants = await Restaurant.find();
@@ -169,7 +172,7 @@ exports.removeDuplicateRestaurants = async (req, res) => {
   }
 };
 
-exports.scrapeSwiggyInfiniteScrollData = async () => {
+export const scrapeSwiggyInfiniteScrollData = async () => {
   const headers = {
     Cookie:
       "__SW=ouvnE8EmVF1HJAaOIu1xr1xSIDv7zl8l; _device_id=2c80bd17-c1c5-c22d-498b-798ed356b7d8; userLocation={%22lat%22:%2219.07480%22%2C%22lng%22:%2272.88560%22%2C%22address%22:%22%22%2C%22area%22:%22%22%2C%22showUserDefaultAddressHint%22:false}; fontsLoaded=1; _guest_tid=84cc6279-23fa-46f4-a8e1-beb33903192e; _sid=ckn99db7-441d-4fca-8335-53d8f719b7a6",

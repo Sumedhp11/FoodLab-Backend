@@ -1,5 +1,6 @@
-const jwt = require("jsonwebtoken");
-exports.verifyToken = async (req, res, next) => {
+import jwt from "jsonwebtoken";
+
+export const verifyToken = async (req, res, next) => {
   let token;
 
   if (
@@ -16,8 +17,6 @@ exports.verifyToken = async (req, res, next) => {
       return next();
     } catch (error) {
       console.error(error);
-
-      return next(new ErrorHandler("failure", "Invalid token", 401));
     }
   }
 

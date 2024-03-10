@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const restaurantSchema = new mongoose.Schema({
   id: {
@@ -48,4 +48,4 @@ const restaurantSchema = new mongoose.Schema({
 
 const Restaurant = mongoose.model("restaurant", restaurantSchema);
 
-module.exports = Restaurant;
+export default Restaurant;

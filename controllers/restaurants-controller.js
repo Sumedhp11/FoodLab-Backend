@@ -1,7 +1,7 @@
-const { Dish } = require("../models/dish-model");
-const Restaurant = require("../models/restaurant-model");
+import Dish from "../models/dish-model.js";
+import Restaurant from "../models/restaurant-model.js";
 
-const getAllRestaurants = async (req, res) => {
+export const getAllRestaurants = async (req, res) => {
   try {
     const search = req.query.search;
     const resId = req.query.resId; // Add resId parameter
@@ -33,7 +33,7 @@ const getAllRestaurants = async (req, res) => {
   }
 };
 
-const getResMenu = async (req, res) => {
+export const getResMenu = async (req, res) => {
   try {
     const { resId } = req.query;
     const { search, page } = req.query;
@@ -69,9 +69,4 @@ const getResMenu = async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-};
-
-module.exports = {
-  getAllRestaurants,
-  getResMenu,
 };

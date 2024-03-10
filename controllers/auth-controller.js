@@ -1,7 +1,8 @@
-const { generateToken } = require("../helper/generateToken");
-const { User } = require("../models/user-model");
-const bcrypt = require("bcrypt");
-exports.createUser = async (req, res) => {
+import bcrypt from "bcrypt";
+import generateToken from "../helper/generateToken.js";
+import User from "../models/user-model.js";
+
+export const createUser = async (req, res) => {
   const { password, name, email, phone } = req.body;
   const hashPwd = await bcrypt.hash(password, 10);
 
@@ -26,7 +27,7 @@ exports.createUser = async (req, res) => {
   }
 };
 
-exports.loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {

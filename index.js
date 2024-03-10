@@ -1,26 +1,24 @@
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import authRouter from "./routes/auth-routes.js";
+import resRouter from "./routes/restaurant-routes.js";
+import scrapeRouter from "./routes/scrape-route.js";
+import cartRouter from "./routes/cart-routes.js";
+import paymentRouter from "./routes/payment-routes.js";
+import { connectDb, disconnectDb } from "./config/dbconnection.js";
+import morgan from "morgan";
 import Razorpay from "razorpay";
 
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const server = express();
-const authRouter = require("./routes/auth-routes");
-const resRouter = require("./routes/restaurant-routes");
-const scrapeRouter = require("./routes/scrape-route");
-const cartRouter = require("./routes/cart-routes");
-const paymentRouter = require("./routes/payment-routes");
-const { connectDb, disconnectDb } = require("./config/dbconnection");
-const morgan = require("morgan");
-
+dotenv.config();
 connectDb();
-const port = process.env.PORT || 5000;
-server.use(morgan("dev"));
 
+const server = express();
+const port = process.env.PORT || 5000;
+
+server.use(morgan("dev"));
 server.use(express.json());
 server.use(cors());
-
-// Define the webhook endpoint for handling UPI payment callback
-server.post("/upi-payment-callback", handleUPIPaymentCallback);
 
 // Landing page route
 server.get("/", (req, res) => {
@@ -61,17 +59,18 @@ server.get("/api", (req, res) => {
 });
 
 // Mount routers
-server.use("/auth", authRouter.router);
-server.use("/restaurants", resRouter.router);
+server.use("/auth", authRouter);
+server.use("/restaurants", resRouter);
 server.use("/", scrapeRouter);
-server.use("/cart", cartRouter.router);
-server.use("/api", paymentRouter.router);
+server.use("/cart", cartRouter);
+server.use("/api", paymentRouter);
 server.use(express.urlencoded({ extended: true }));
 
-export const instance = new Razorpay({
-  key_id: RAZORPAY_KEY_ID,
-  key_secret: RAZORPAY_KEY_SECRET,
+export const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
+
 server.listen(port, () => {
   console.log("Server Started at " + port);
 });

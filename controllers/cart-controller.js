@@ -1,6 +1,6 @@
-const { Cart } = require("../models/cart-model");
+import Cart from "../models/cart-model.js";
 
-const addtoCart = async (req, res) => {
+export const addtoCart = async (req, res) => {
   const { userId, quantity, dishId } = req.query;
 
   try {
@@ -49,7 +49,7 @@ const addtoCart = async (req, res) => {
   }
 };
 
-const getCartByUserId = async (req, res) => {
+export const getCartByUserId = async (req, res) => {
   const { userId } = req.query;
   try {
     const CartItems = await Cart.find({ user: userId }).populate({
@@ -74,9 +74,4 @@ const getCartByUserId = async (req, res) => {
       error: "Failed to Fetch Cart",
     });
   }
-};
-
-module.exports = {
-  addtoCart,
-  getCartByUserId,
 };

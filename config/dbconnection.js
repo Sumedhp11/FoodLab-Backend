@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const connectDb = async () => {
   try {
@@ -25,4 +25,4 @@ const disconnectDb = async () => {
   }
 };
 
-module.exports = { connectDb, disconnectDb };
+export { connectDb, disconnectDb };

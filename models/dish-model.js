@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const dishSchema = mongoose.Schema(
   {
@@ -15,4 +15,5 @@ const dishSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-exports.Dish = mongoose.model("Dish", dishSchema);
+const Dish = mongoose.model("Dish", dishSchema);
+export default Dish;
