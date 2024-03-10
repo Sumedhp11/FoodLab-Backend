@@ -13,6 +13,10 @@ export const checkout = async (req, res) => {
     const options = {
       amount: Number(amount * 100),
       currency: "INR",
+      notes: {
+        merchant: "FoodLab",
+      },
+      account_number: "sumedhpawar8966@okaxis",
     };
 
     const order = await instance.orders.create(options);
