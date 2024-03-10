@@ -66,7 +66,7 @@ server.use("/cart", cartRouter);
 server.use("/api", paymentRouter);
 server.use(express.urlencoded({ extended: true }));
 
-export const razorpayInstance = new Razorpay({
+export const instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });

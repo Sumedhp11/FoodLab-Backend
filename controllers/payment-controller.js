@@ -1,4 +1,4 @@
-import { razorpayInstance } from "../index.js";
+import { instance } from "../index.js";
 import crypto from "crypto";
 
 export const checkout = async (req, res) => {
@@ -9,7 +9,7 @@ export const checkout = async (req, res) => {
       currency: "INR",
     };
 
-    const order = await razorpayInstance.orders.create(options);
+    const order = await instance.orders.create(options);
     return res.status(200).json({ success: true, data: order });
   } catch (error) {
     console.log(error);
