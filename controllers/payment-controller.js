@@ -1,6 +1,12 @@
-import instance  from "../index.js";
+import Razorpay from "razorpay";
 import crypto from "crypto";
+import dotenv from "dotenv";
+dotenv.config();
 
+const instance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 export const checkout = async (req, res) => {
   const { amount } = req.body;
   try {

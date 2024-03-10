@@ -8,7 +8,7 @@ import cartRouter from "./routes/cart-routes.js";
 import paymentRouter from "./routes/payment-routes.js";
 import { connectDb, disconnectDb } from "./config/dbconnection.js";
 import morgan from "morgan";
-import Razorpay from "razorpay";
+
 
 dotenv.config();
 connectDb();
@@ -66,11 +66,6 @@ server.use("/cart", cartRouter);
 server.use("/api", paymentRouter);
 server.use(express.urlencoded({ extended: true }));
 
-const instance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-export default instance;
 
 server.listen(port, () => {
   console.log("Server Started at " + port);
