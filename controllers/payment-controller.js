@@ -15,8 +15,8 @@ export const checkout = async (req, res) => {
       currency: "INR",
       notes: {
         merchant: "FoodLab",
+        upi_id: "sumedhpawar8966@okaxis",
       },
-      account_number: "sumedhpawar8966@okaxis",
     };
 
     const order = await instance.orders.create(options);
