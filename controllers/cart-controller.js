@@ -1,4 +1,5 @@
 import Cart from "../models/cart-model.js";
+import User from "../models/user-model.js";
 
 export const addtoCart = async (req, res) => {
   const { userId, quantity, dishId } = req.query;
@@ -55,6 +56,8 @@ export const getCartByUserId = async (req, res) => {
     const CartItems = await Cart.find({ user: userId }).populate({
       path: "dish",
     });
+    const user = await User.findById(userId);
+    console.log(user);
     let totalPrice = 0;
     CartItems.forEach((item) => {
       totalPrice += (item.dish.mrp / 100) * item.quantity;
@@ -64,6 +67,7 @@ export const getCartByUserId = async (req, res) => {
       status: 200,
       message: "Cart Fetched Sucessfully",
       data: {
+        user: user,
         cartitems: CartItems,
         totalPrice: totalPrice,
       },
