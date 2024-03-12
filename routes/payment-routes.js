@@ -7,6 +7,6 @@ import {
 const router = express.Router();
 
 router.post("/checkout", checkout);
-router.post("/payment-verification", paymentVerification);
+router.post("/paymentverification", paymentVerification);
 
 export default router;

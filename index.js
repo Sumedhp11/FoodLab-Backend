@@ -9,7 +9,6 @@ import paymentRouter from "./routes/payment-routes.js";
 import { connectDb, disconnectDb } from "./config/dbconnection.js";
 import morgan from "morgan";
 
-
 dotenv.config();
 connectDb();
 
@@ -63,9 +62,8 @@ server.use("/auth", authRouter);
 server.use("/restaurants", resRouter);
 server.use("/", scrapeRouter);
 server.use("/cart", cartRouter);
-server.use("/api", paymentRouter);
+server.use("/", paymentRouter);
 server.use(express.urlencoded({ extended: true }));
-
 
 server.listen(port, () => {
   console.log("Server Started at " + port);
