@@ -22,14 +22,9 @@ export const addNewAddress = async (req, res) => {
       { new: true }
     );
 
-    console.log(updatedUser);
-
-    // Return success response
     res.status(201).json({ success: true, data: newAddress });
   } catch (error) {
     console.error("Error adding new address:", error);
-    res
-      .status(500)
-      .json({ success: false, error: "Failed to add new address" });
+    res.status(500).json({ success: false, error: error });
   }
 };
