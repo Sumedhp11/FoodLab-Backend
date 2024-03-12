@@ -4,6 +4,10 @@ const { Schema } = mongoose;
 
 const OrderSchema = new Schema(
   {
+    userId: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
     dishes: [
       {
         dish: {
@@ -28,15 +32,12 @@ const OrderSchema = new Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["pending", "failed", "processed"],
       default: "pending",
     },
-    paymentMethod: {
-      type: String,
-      required: true,
-    },
+
     address: {
-      type: String,
+      type: mongoose.Types.ObjectId,
+      ref: "Address",
       required: true,
     },
   },

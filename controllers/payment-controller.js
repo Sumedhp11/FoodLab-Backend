@@ -1,23 +1,18 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import dotenv from "dotenv";
-import paymentModel from "../models/payment-model.js";
+import Payment from "../models/payment-model.js";
+import Order from "../models/order-model.js";
+import Cart from "../models/cart-model.js";
 dotenv.config();
 
 const instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
-export const extractUserData = (req, res, next) => {
-  console.log(req.body, 12);
-  const { userId, selectedAddress } = req.body;
-  req.userData = { userId, selectedAddress };
-  console.log(req.userData, 15);
-  next();
-};
 
 export const checkout = async (req, res) => {
-  const { amount } = req.body;
+  const { amount, userId, selectedAddress, cartItems } = req.body;
 
   try {
     const options = {
@@ -30,6 +25,16 @@ export const checkout = async (req, res) => {
     };
 
     const order = await instance.orders.create(options);
+    console.log(order, 26);
+    const payment = new Payment({
+      razorpay_order_id: order.id,
+      userId,
+      selectedAddress,
+      dishes: cartItems,
+    });
+
+    await payment.save();
+
     return res.status(200).json({ success: true, data: order });
   } catch (error) {
     console.log(error);
@@ -43,20 +48,49 @@ export const checkout = async (req, res) => {
 export const paymentVerification = async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;
-  // console.log(req, "44");c
+
+  // Verify the payment signature
   const body = razorpay_order_id + "|" + razorpay_payment_id;
   const expectedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
     .update(body.toString())
     .digest("hex");
   const isauth = expectedSignature === razorpay_signature;
-  if (isauth) {
-    const razorpayOrder = await instance.orders.fetch(razorpay_order_id);
 
-    res.redirect(
-      `http://localhost:5173/congrats?reference=${razorpay_payment_id}`
-    );
+  if (isauth) {
+    try {
+      const payment = await Payment.findOne({ razorpay_order_id });
+      if (!payment) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Payment not found" });
+      }
+      const order = await instance.orders.fetch(razorpay_order_id);
+      const orderDetails = {
+        userId: payment.userId,
+        dishes: payment.dishes,
+        amount: order.amount,
+        deliveryStatus: "pending",
+        paymentStatus: order.status,
+        address: payment.selectedAddress,
+      };
+      const newOrder = await Order.create(orderDetails);
+      await Cart.deleteMany({ user: payment.userId });
+
+      await Payment.deleteMany({ razorpay_order_id: razorpay_order_id });
+
+      return res.redirect(
+        `http://localhost:5173/congrats?reference=${razorpay_payment_id}`
+      );
+    } catch (error) {
+      console.error("Error:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
   } else {
-    res.status(400).json({ success: false });
+    return res
+      .status(400)
+      .json({ success: false, message: "Payment verification failed" });
   }
 };
