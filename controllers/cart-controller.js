@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+import Address from "../models/address-model.js";
 import Cart from "../models/cart-model.js";
 import User from "../models/user-model.js";
 
@@ -53,29 +55,40 @@ export const addtoCart = async (req, res) => {
 export const getCartByUserId = async (req, res) => {
   const { userId } = req.query;
   try {
-    const CartItems = await Cart.find({ user: userId }).populate({
-      path: "dish",
+    const cartItems = await Cart.find({ user: userId }).populate("dish");
+    const user = await User.findOne({ _id: userId }).populate({
+      path: `addresses`,
     });
-    const user = await User.findById(userId);
-    console.log(user);
+
+    console.log(user, "61");
+    const addresses = await Address.find({ user: userId });
+
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
     let totalPrice = 0;
-    CartItems.forEach((item) => {
+    cartItems.forEach((item) => {
       totalPrice += (item.dish.mrp / 100) * item.quantity;
     });
+    totalPrice = totalPrice.toFixed(2);
 
     return res.status(200).json({
       status: 200,
-      message: "Cart Fetched Sucessfully",
+      message: "Cart fetched successfully",
       data: {
-        user: user,
-        cartitems: CartItems,
-        totalPrice: totalPrice,
+        user,
+        cartItems,
+        totalPrice,
       },
     });
   } catch (error) {
-    console.log(error);
-    res.status(400).json({
-      error: "Failed to Fetch Cart",
+    console.error(`Error fetching cart: ${error}`);
+    res.status(500).json({
+      error: "Failed to fetch cart",
     });
   }
 };

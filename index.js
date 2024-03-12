@@ -6,6 +6,7 @@ import resRouter from "./routes/restaurant-routes.js";
 import scrapeRouter from "./routes/scrape-route.js";
 import cartRouter from "./routes/cart-routes.js";
 import paymentRouter from "./routes/payment-routes.js";
+import addressRouter from "./routes/address-routes.js";
 import { connectDb, disconnectDb } from "./config/dbconnection.js";
 import morgan from "morgan";
 
@@ -17,6 +18,7 @@ const port = process.env.PORT || 5000;
 
 server.use(morgan("dev"));
 server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 server.use(cors());
 
 // Landing page route
@@ -63,7 +65,7 @@ server.use("/restaurants", resRouter);
 server.use("/", scrapeRouter);
 server.use("/cart", cartRouter);
 server.use("/", paymentRouter);
-server.use(express.urlencoded({ extended: true }));
+server.use("/address", addressRouter);
 
 server.listen(port, () => {
   console.log("Server Started at " + port);
