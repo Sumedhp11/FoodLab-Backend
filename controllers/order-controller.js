@@ -7,6 +7,8 @@ export const getOrderByUserId = async (req, res) => {
     const order = await Order.find({ userId: userId }).populate({
       path: `dishes.dish`,
       model: "Dish",
+      path: `address`,
+      model: "Address",
     });
     console.log(order, 7);
     return res.status(200).json({
