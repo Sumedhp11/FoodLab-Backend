@@ -70,7 +70,7 @@ export const paymentVerification = async (req, res) => {
         userId: payment.userId,
         dishes: payment.dishes,
         amount: order.amount,
-        deliveryStatus: "pending",
+        deliveryStatus: "placed",
         paymentStatus: order.status,
         address: payment.selectedAddress,
       };
