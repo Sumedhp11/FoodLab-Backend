@@ -7,6 +7,7 @@ import scrapeRouter from "./routes/scrape-route.js";
 import cartRouter from "./routes/cart-routes.js";
 import paymentRouter from "./routes/payment-routes.js";
 import addressRouter from "./routes/address-routes.js";
+import orderRouter from "./routes/order-routes.js";
 import { connectDb, disconnectDb } from "./config/dbconnection.js";
 import morgan from "morgan";
 
@@ -66,6 +67,7 @@ server.use("/", scrapeRouter);
 server.use("/cart", cartRouter);
 server.use("/", paymentRouter);
 server.use("/address", addressRouter);
+server.use("/order", orderRouter);
 
 server.listen(port, () => {
   console.log("Server Started at " + port);

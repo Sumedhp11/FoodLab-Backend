@@ -60,9 +60,6 @@ export const getCartByUserId = async (req, res) => {
       path: `addresses`,
     });
 
-    console.log(user, "61");
-    const addresses = await Address.find({ user: userId });
-
     if (!user) {
       return res.status(404).json({
         status: 404,
