@@ -78,7 +78,7 @@ export const favtoggle = async (req, res) => {
     rest.isFav = !rest.isFav;
     await rest.save();
 
-    return res.sendStatus(200);
+    return res.status(200);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Internal Server Error" });
