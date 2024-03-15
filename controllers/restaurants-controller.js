@@ -75,10 +75,10 @@ export const favtoggle = async (req, res) => {
   const { resId } = req.query;
   try {
     const rest = await Restaurant.findById(resId);
-    rest.isFav = !res.isFav;
+    rest.isFav = !rest.isFav;
     await rest.save();
 
-    return res.status(200);
+    return res.sendStatus(200);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Internal Server Error" });
