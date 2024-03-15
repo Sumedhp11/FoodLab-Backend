@@ -44,6 +44,10 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isFav: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Restaurant = mongoose.model("restaurant", restaurantSchema);
