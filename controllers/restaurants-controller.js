@@ -70,19 +70,3 @@ export const getResMenu = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-export const favtoggle = async (req, res) => {
-  const { resId } = req.query;
-  try {
-    const rest = await Restaurant.findById(resId);
-    rest.isFav = !rest.isFav;
-    await rest.save();
-
-    return res.status(200).json({
-      message: "Sucessfully updated isfav",
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
