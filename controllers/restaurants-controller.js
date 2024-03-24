@@ -36,11 +36,17 @@ export const getAllRestaurants = async (req, res) => {
 export const getResMenu = async (req, res) => {
   try {
     const { resId } = req.query;
-    const { search, page } = req.query;
+    const { search, page, isveg } = req.query;
     let query = {};
+
     if (search) {
-      query = { name: { $regex: search, $options: "i" } };
+      query.name = { $regex: search, $options: "i" };
     }
+
+    if (isveg !== undefined) {
+      query.isVeg = isveg === "true";
+    }
+
     const pageSize = 20;
     const pageNumber = parseInt(page) || 1;
     const skip = (pageNumber - 1) * pageSize;
@@ -50,6 +56,7 @@ export const getResMenu = async (req, res) => {
       ...query,
     });
 
+    // Calculate total pages
     const totalPages = Math.ceil(totalCount / pageSize);
 
     // Fetch menu list with pagination
