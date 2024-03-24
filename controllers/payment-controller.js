@@ -13,7 +13,7 @@ var transport = nodemailer.createTransport({
   port: 2525,
   auth: {
     user: "9883af3becd820",
-    pass: "********780e",
+    pass: "3fae2749d9780e",
   },
 });
 const instance = new Razorpay({
