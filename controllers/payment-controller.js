@@ -8,11 +8,12 @@ import User from "../models/user-model.js";
 import nodemailer from "nodemailer";
 
 dotenv.config();
-const transporter = nodemailer.createTransport({
-  service: "gmail",
+var transport = nodemailer.createTransport({
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
   auth: {
-    user: "foodlab839@gmail.com",
-    pass: "foodlab@123",
+    user: "9883af3becd820",
+    pass: "3fae2749d9780e",
   },
 });
 const instance = new Razorpay({
@@ -114,7 +115,7 @@ const sendConfirmationEmail = async (userEmail, paymentId) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await transport.sendMail(mailOptions);
     console.log("Email sent successfully");
   } catch (error) {
     console.error("Error sending email:", error);
