@@ -4,8 +4,17 @@ import dotenv from "dotenv";
 import Payment from "../models/payment-model.js";
 import Order from "../models/order-model.js";
 import Cart from "../models/cart-model.js";
-dotenv.config();
+import User from "../models/user-model.js";
+import nodemailer from "nodemailer";
 
+dotenv.config();
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 const instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -66,6 +75,7 @@ export const paymentVerification = async (req, res) => {
           .json({ success: false, message: "Payment not found" });
       }
       const order = await instance.orders.fetch(razorpay_order_id);
+      const user = await User.findById(payment.userId);
       const orderDetails = {
         userId: payment.userId,
         dishes: payment.dishes,
@@ -78,9 +88,9 @@ export const paymentVerification = async (req, res) => {
       await Cart.deleteMany({ user: payment.userId });
 
       await Payment.deleteMany({ razorpay_order_id: razorpay_order_id });
-
+      await sendConfirmationEmail(user.email, razorpay_payment_id);
       return res.redirect(
-        `http://localhost:5173/congrats?reference=${razorpay_payment_id}`
+        `https://foodllaab.vercel.app/congrats?reference=${razorpay_payment_id}`
       );
     } catch (error) {
       console.error("Error:", error);
@@ -92,5 +102,21 @@ export const paymentVerification = async (req, res) => {
     return res
       .status(400)
       .json({ success: false, message: "Payment verification failed" });
+  }
+};
+const sendConfirmationEmail = async (userEmail, paymentId) => {
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: userEmail,
+    subject: "Order Confirmation",
+    text: `Your order with payment ID ${paymentId} has been successfully placed. Thank you for shopping with us!`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully");
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
   }
 };
