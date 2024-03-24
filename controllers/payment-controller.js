@@ -9,11 +9,11 @@ import nodemailer from "nodemailer";
 
 dotenv.config();
 var transport = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
   auth: {
-    user: "foodlab",
-    pass: "xsmtpsib-0c4549a99292783892edba9e50bc177373efa12e28c3d69ae2c942c35c17f8c2-jpWH95Fwqa0rx4KN",
+    user: "9883af3becd820",
+    pass: "********780e",
   },
 });
 const instance = new Razorpay({
