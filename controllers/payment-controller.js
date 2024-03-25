@@ -93,8 +93,8 @@ export const paymentVerification = async (req, res) => {
       await Payment.deleteMany({ razorpay_order_id: razorpay_order_id });
       await sendConfirmationEmail(user.email, razorpay_payment_id);
       return res.redirect(
-        `http://localhost:5173/congrats?reference=${razorpay_payment_id}`
-        // `https://foodllaab.vercel.app/congrats?reference=${razorpay_payment_id}`
+        // `http://localhost:5173/congrats?reference=${razorpay_payment_id}`
+        `https://foodllaab.vercel.app/congrats?reference=${razorpay_payment_id}`
       );
     } catch (error) {
       console.error("Error:", error);
