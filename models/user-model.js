@@ -10,6 +10,10 @@ const UserSchema = new Schema({
   addresses: [{ type: Schema.Types.ObjectId, ref: "Address" }],
   orders: [{ type: Schema.Types.ObjectId, ref: "Order" }],
   orderHistory: [{ type: Schema.Types.ObjectId, ref: "OrderHistory" }],
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const virtual = UserSchema.virtual("id");
