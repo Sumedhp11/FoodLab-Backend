@@ -76,3 +76,24 @@ export const getAllOrders = async (req, res) => {
     });
   }
 };
+
+export const changeDeliveryStatus = async (req, res) => {
+  try {
+    const { orderId, deliverystatus } = req.query;
+    const order = await Order.findById(orderId);
+
+    order.deliveryStatus = deliverystatus;
+    await order.save();
+    return res.status(200).json({
+      status: 200,
+      message: "Delivery Status Updated Sucessfully",
+      data: order,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 500,
+      message: "Server Error",
+    });
+  }
+};
