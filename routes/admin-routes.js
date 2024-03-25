@@ -1,9 +1,9 @@
 import express from "express";
-import { getAllUsers } from "../controllers/admin-controller.js";
+import { deleteUser, getAllUsers } from "../controllers/admin-controller.js";
 
 const router = express.Router();
 
 router.get("/users", getAllUsers);
-router.get("/deleteuser", getAllUsers);
+router.get("/deleteuser", deleteUser);
 
 export default router;
