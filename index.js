@@ -9,6 +9,7 @@ import paymentRouter from "./routes/payment-routes.js";
 import addressRouter from "./routes/address-routes.js";
 import orderRouter from "./routes/order-routes.js";
 import favRouter from "./routes/favourites-routes.js";
+import adminRouter from "./routes/admin-routes.js";
 import { connectDb, disconnectDb } from "./config/dbconnection.js";
 import morgan from "morgan";
 
@@ -70,6 +71,7 @@ server.use("/", paymentRouter);
 server.use("/address", addressRouter);
 server.use("/order", orderRouter);
 server.use("/fav", favRouter);
+server.use("/admin", adminRouter);
 
 server.listen(port, () => {
   console.log("Server Started at " + port);
