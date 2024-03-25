@@ -1,7 +1,7 @@
 import User from "../models/user-model.js";
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({ isdeleted: false }, { password: 0 });
+    const users = await User.find({}, { password: 0 });
     return res.status(200).json({
       status: 200,
       message: "Users Fetched Sucessfully",
