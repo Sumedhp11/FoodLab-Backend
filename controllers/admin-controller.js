@@ -1,3 +1,4 @@
+import Order from "../models/order-model.js";
 import User from "../models/user-model.js";
 export const getAllUsers = async (req, res) => {
   try {
@@ -35,6 +36,37 @@ export const deleteUser = async (req, res) => {
       status: 200,
       message: "User deleted successfully",
       data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 500,
+      message: "Server Error",
+    });
+  }
+};
+
+export const getAllOrders = async (req, res) => {
+  try {
+    const order = await Order.find().populate([
+      {
+        path: "dishes.dish",
+        model: "Dish",
+      },
+      {
+        path: "address",
+        model: "Address",
+      },
+      {
+        path: "userId",
+        model: "User",
+        select: "name email phone", // Specify the fields to retrieve
+      },
+    ]);
+    return res.status(200).json({
+      status: 200,
+      message: "Orders Fetched Sucessfully",
+      data: order,
     });
   } catch (error) {
     console.log(error);

@@ -14,7 +14,7 @@ export const getOrderByUserId = async (req, res) => {
         model: "Address",
       },
     ]);
-    console.log(order, 7);
+
     return res.status(200).json({
       status: "200",
       message: "Successfully fetched Orders",

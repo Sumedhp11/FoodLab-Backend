@@ -86,6 +86,8 @@ export const paymentVerification = async (req, res) => {
         address: payment.selectedAddress,
       };
       const newOrder = await Order.create(orderDetails);
+      user.orders.push(newOrder._id);
+      await user.save();
       await Cart.deleteMany({ user: payment.userId });
 
       await Payment.deleteMany({ razorpay_order_id: razorpay_order_id });
