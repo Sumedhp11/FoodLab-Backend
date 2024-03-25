@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  changeDeliveryStatus,
   deleteUser,
   getAllOrders,
   getAllUsers,
@@ -10,5 +11,6 @@ const router = express.Router();
 router.get("/users", getAllUsers);
 router.get("/deleteuser", deleteUser);
 router.get("/orders", getAllOrders);
+router.put("/update-delivery-status", changeDeliveryStatus);
 
 export default router;
