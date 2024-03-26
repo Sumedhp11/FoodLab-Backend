@@ -18,7 +18,6 @@ const restaurantSchema = new mongoose.Schema({
   },
   areaName: {
     type: String,
-    required: true,
   },
   costForTwo: {
     type: String,
@@ -38,7 +37,6 @@ const restaurantSchema = new mongoose.Schema({
   },
   deliveryTime: {
     type: Number,
-    required: true,
   },
   slaString: {
     type: String,

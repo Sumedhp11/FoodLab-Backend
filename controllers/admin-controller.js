@@ -167,3 +167,43 @@ export const deleteRes = async (req, res) => {
     });
   }
 };
+
+export const addnewres = async (req, res) => {
+  try {
+    let image;
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      image = result.public_id;
+    }
+    const { name, slaString, costForTwo } = req.body;
+    const generateUniqueId = () => Math.floor(Math.random() * 900000) + 100000;
+    const totalRatings =
+      (3.0 * 200).toLocaleString("en-US", { maximumFractionDigits: 1 }) + "K";
+    const newRestaurant = new Restaurant({
+      name,
+      id: generateUniqueId(),
+      imageId: image,
+      cuisines: ["Dosa,Idli,Burger,Pizza"],
+      avgRating: 3.0,
+      totalRatings: totalRatings,
+      slaString,
+      costForTwo,
+    });
+
+    await newRestaurant.save();
+
+    return res.status(201).json({
+      status: 201,
+      message: "Restaurant added successfully",
+      data: newRestaurant,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: 500,
+      message: "Server Error",
+      error: error.message,
+    });
+  }
+};
