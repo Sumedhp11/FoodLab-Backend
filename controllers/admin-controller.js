@@ -1,5 +1,7 @@
 import Order from "../models/order-model.js";
 import User from "../models/user-model.js";
+import Restaurant from "../models/restaurant-model.js";
+import cloudinary from "../helper/cloudinaryconfig.js";
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({}, { password: 0 });
@@ -94,6 +96,74 @@ export const changeDeliveryStatus = async (req, res) => {
     return res.status(500).json({
       status: 500,
       message: "Server Error",
+    });
+  }
+};
+
+export const EditRestaurant = async (req, res) => {
+  try {
+    let image;
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      image = result.public_id;
+    }
+
+    const { name, costForTwo } = req.body;
+
+    // Create new restaurant object with updated information
+    const updatedRestaurant = {
+      name: name,
+      costForTwo: costForTwo,
+    };
+
+    if (image) {
+      updatedRestaurant.imageId = image;
+    }
+
+    const restaurant = await Restaurant.findByIdAndUpdate(
+      req.params.id,
+      updatedRestaurant,
+      { new: true }
+    );
+
+    // Check if restaurant was found and updated
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found!" });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message: "Restaurant updated successfully",
+      data: restaurant,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 500,
+      message: "Server Error",
+      error,
+    });
+  }
+};
+
+export const deleteRes = async (req, res) => {
+  try {
+    const { resId } = req.query;
+
+    const restaurant = await Restaurant.findById(resId);
+    restaurant.isdeleted = true;
+    restaurant.save();
+    return res.status(200).json({
+      status: 200,
+      message: "Restaurant deleted Sucessfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 500,
+      message: "Server Error",
+      error,
     });
   }
 };

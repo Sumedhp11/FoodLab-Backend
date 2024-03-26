@@ -1,7 +1,7 @@
+import cloudinary from "../helper/cloudinaryconfig.js";
 import axios from "axios";
 import Dish from "../models/dish-model.js";
 import Restaurant from "../models/restaurant-model.js";
-
 export const scrapeSwiggyResutaurantDataWithUrl = async (req, res) => {
   try {
     const url =
@@ -265,5 +265,72 @@ const saveRestaurantsToDB = async (restaurants) => {
   } catch (error) {
     console.error("Error saving restaurants to the database:", error);
     throw error;
+  }
+};
+
+export const getSwiggyImages = async (req, res) => {
+  try {
+    const dishes = await Dish.find();
+    console.log(dishes);
+
+    for (const dish of dishes) {
+      if (!dish.image) {
+        console.log(`Skipping dish ${dish._id}: Image not found`);
+        continue;
+      }
+
+      const imageUrl = `https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_660/${dish.image}`;
+
+      try {
+        const result = await cloudinary.uploader.upload(imageUrl);
+
+        // Update dish with new image ID from Cloudinary
+        dish.image = result.public_id;
+        console.log(`Image uploaded for dish ${dish._id}: ${result.public_id}`);
+        await dish.save();
+      } catch (error) {
+        if (error.message.includes("Resource not found")) {
+          console.log(`Image not found for dish ${dish._id}. Skipping...`);
+          continue; // Skip to the next iteration of the loop
+        }
+        console.error(
+          `Error uploading image for dish ${dish._id}: ${error.message}`
+        );
+      }
+    }
+    console.log(
+      "All images uploaded and dishes image IDs updated successfully."
+    );
+    return res.status(200).json({
+      message: "Images scraped properly",
+    });
+  } catch (error) {
+    console.error("Error:", error.message);
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const addIsDeleted = async (req, res) => {
+  try {
+    const dishes = await Dish.find();
+
+    for (const dish of dishes) {
+      // Add isDeleted key with default value false
+      dish.isdeleted = false;
+      // Save the updated restaurant
+      await dish.save();
+    }
+
+    return res.status(200).json({
+      message: "isDeleted key added to all restaurants successfully.",
+    });
+  } catch (error) {
+    console.error("Error:", error.message);
+    return res.status(500).json({
+      message: "An error occurred while adding isDeleted key to restaurants.",
+      error: error.message,
+    });
   }
 };

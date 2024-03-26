@@ -48,6 +48,10 @@ const restaurantSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isdeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Restaurant = mongoose.model("restaurant", restaurantSchema);
