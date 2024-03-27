@@ -9,7 +9,7 @@ export const getAllRestaurants = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    let query = {};
+    let query = { isdeleted: false };
     if (search) {
       query = { name: { $regex: search, $options: "i" } };
     }
