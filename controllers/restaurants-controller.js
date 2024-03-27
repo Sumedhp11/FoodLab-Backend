@@ -4,7 +4,7 @@ import Restaurant from "../models/restaurant-model.js";
 export const getAllRestaurants = async (req, res) => {
   try {
     const search = req.query.search;
-    const resId = req.query.resId; // Add resId parameter
+    const resId = req.query.resId;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
@@ -14,7 +14,7 @@ export const getAllRestaurants = async (req, res) => {
       query = { name: { $regex: search, $options: "i" } };
     }
     if (resId) {
-      query.id = resId; // Filter by restaurant ID
+      query.id = resId;
     }
 
     const totalItems = await Restaurant.countDocuments(query);
