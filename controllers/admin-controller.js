@@ -4,7 +4,7 @@ import Restaurant from "../models/restaurant-model.js";
 import cloudinary from "../helper/cloudinaryconfig.js";
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, { password: 0 });
+    const users = await User.find({ isAdmin: false }, { password: 0 });
     return res.status(200).json({
       status: 200,
       message: "Users Fetched Sucessfully",

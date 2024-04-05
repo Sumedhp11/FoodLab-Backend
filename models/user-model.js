@@ -9,7 +9,7 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   addresses: [{ type: Schema.Types.ObjectId, ref: "Address" }],
   orders: [{ type: Schema.Types.ObjectId, ref: "Order" }],
-  orderHistory: [{ type: Schema.Types.ObjectId, ref: "OrderHistory" }],
+  // orderHistory: [{ type: Schema.Types.ObjectId, ref: "OrderHistory" }],
   isdeleted: {
     type: Boolean,
     default: false,
