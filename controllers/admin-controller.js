@@ -133,6 +133,28 @@ export const GetAllOrderChartData = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+export const getNumberOfDeliveryStatusOrders = async (req, res) => {
+  try {
+    const orders = await Order.find();
+
+    const deliveryStatusCounts = {};
+
+    orders.forEach((order) => {
+      const deliveryStatus = order.deliveryStatus;
+
+      if (deliveryStatusCounts[deliveryStatus]) {
+        deliveryStatusCounts[deliveryStatus]++;
+      } else {
+        deliveryStatusCounts[deliveryStatus] = 1;
+      }
+    });
+
+    return res.status(200).json(deliveryStatusCounts);
+  } catch (error) {
+    console.error("Error fetching order data:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 export const EditRestaurant = async (req, res) => {
   try {

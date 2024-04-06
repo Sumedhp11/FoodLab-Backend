@@ -8,6 +8,7 @@ import {
   getAllUsers,
   addnewres,
   GetAllOrderChartData,
+  getNumberOfDeliveryStatusOrders,
 } from "../controllers/admin-controller.js";
 import upload from "../helper/multerconfig.js";
 
@@ -17,6 +18,7 @@ router.get("/users", getAllUsers);
 router.get("/deleteuser", deleteUser);
 router.get("/orders", getAllOrders);
 router.get("/order-monthly", GetAllOrderChartData);
+router.get("/delivery-status-no", getNumberOfDeliveryStatusOrders);
 router.put("/update-delivery-status", changeDeliveryStatus);
 router.post("/edit-res/:id", upload.single("image"), EditRestaurant);
 router.put("/delete-res", deleteRes);
