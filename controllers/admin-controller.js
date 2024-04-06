@@ -100,6 +100,40 @@ export const changeDeliveryStatus = async (req, res) => {
   }
 };
 
+export const GetAllOrderChartData = async (req, res) => {
+  try {
+    const orders = await Order.find();
+
+    const monthlyOrderTotals = {};
+
+    orders.forEach((order) => {
+      const orderDate = new Date(order.createdAt);
+      const monthYear = orderDate.toLocaleString("en-US", {
+        month: "long",
+        year: "numeric",
+      });
+
+      if (monthlyOrderTotals[monthYear]) {
+        monthlyOrderTotals[monthYear]++;
+      } else {
+        monthlyOrderTotals[monthYear] = 1;
+      }
+    });
+
+    const monthlyOrderChartData = Object.keys(monthlyOrderTotals).map(
+      (monthYear) => ({
+        monthYear,
+        totalOrders: monthlyOrderTotals[monthYear],
+      })
+    );
+
+    return res.status(200).json(monthlyOrderChartData);
+  } catch (error) {
+    console.error("Error fetching order data:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const EditRestaurant = async (req, res) => {
   try {
     let image;
