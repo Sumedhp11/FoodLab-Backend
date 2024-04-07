@@ -119,7 +119,7 @@ export const changeDeliveryStatus = async (req, res) => {
 export const getAllrestaurants = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 15;
+    const perPage = 5;
     const skip = (page - 1) * perPage;
 
     const restaurants = await Restaurant.find().skip(skip).limit(perPage);

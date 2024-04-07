@@ -42,10 +42,7 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  isFav: {
-    type: Boolean,
-    default: false,
-  },
+
   isdeleted: {
     type: Boolean,
     default: false,
