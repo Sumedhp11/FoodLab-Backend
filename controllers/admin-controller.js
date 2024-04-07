@@ -116,6 +116,30 @@ export const changeDeliveryStatus = async (req, res) => {
   }
 };
 
+export const getAllrestaurants = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = 15;
+    const skip = (page - 1) * perPage;
+
+    const restaurants = await Restaurant.find().skip(skip).limit(perPage);
+
+    return res.status(200).json({
+      status: 200,
+      data: {
+        restaurants,
+        totalDocs: Math.ceil((await Restaurant.countDocuments()) / perPage),
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: 500,
+      error: "Internal server error",
+    });
+  }
+};
+
 export const GetAllOrderChartData = async (req, res) => {
   try {
     const orders = await Order.find();

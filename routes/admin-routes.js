@@ -10,6 +10,7 @@ import {
   GetAllOrderChartData,
   getNumberOfDeliveryStatusOrders,
   getNumberOfUserPerMonth,
+  getAllrestaurants,
 } from "../controllers/admin-controller.js";
 import upload from "../helper/multerconfig.js";
 
@@ -22,6 +23,8 @@ router.get("/order-monthly", GetAllOrderChartData);
 router.get("/user-monthly", getNumberOfUserPerMonth);
 router.get("/delivery-status-no", getNumberOfDeliveryStatusOrders);
 router.put("/update-delivery-status", changeDeliveryStatus);
+router.post("/edit-res/:id", upload.single("image"), EditRestaurant);
+router.get("/allrestaurants", getAllrestaurants);
 router.post("/edit-res/:id", upload.single("image"), EditRestaurant);
 router.put("/delete-res", deleteRes);
 router.post("/add-res", upload.single("image"), addnewres);
