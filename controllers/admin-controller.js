@@ -2,6 +2,22 @@ import Order from "../models/order-model.js";
 import User from "../models/user-model.js";
 import Restaurant from "../models/restaurant-model.js";
 import cloudinary from "../helper/cloudinaryconfig.js";
+function getAllMonths() {
+  return [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+}
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({ isAdmin: false }, { password: 0 });
@@ -128,6 +144,33 @@ export const GetAllOrderChartData = async (req, res) => {
     );
 
     return res.status(200).json(monthlyOrderChartData);
+  } catch (error) {
+    console.error("Error fetching order data:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getNumberOfUserPerMonth = async (req, res) => {
+  try {
+    const users = await User.find();
+
+    const userCountPerMonth = {};
+
+    users.forEach((user) => {
+      const month = new Date(user.createdAt).getMonth();
+      const monthName = getAllMonths()[month];
+      if (!userCountPerMonth[monthName]) {
+        userCountPerMonth[monthName] = 1;
+      } else {
+        userCountPerMonth[monthName]++;
+      }
+    });
+
+    const result = Object.keys(userCountPerMonth).map((month) => ({
+      month: month,
+      count: userCountPerMonth[month],
+    }));
+
+    return res.status(200).json(result);
   } catch (error) {
     console.error("Error fetching order data:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -261,5 +304,38 @@ export const addnewres = async (req, res) => {
       message: "Server Error",
       error: error.message,
     });
+  }
+};
+
+export const addTimeStamptoUser = async (req, res) => {
+  try {
+    const users = await User.find();
+
+    const currentYear = new Date().getFullYear();
+
+    let monthCounter = 0;
+
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+
+      const month = (monthCounter % 12) + 1;
+      const timestamp = new Date(`${currentYear}-${month}-01T00:00:00.000Z`);
+
+      await User.findByIdAndUpdate(user._id, {
+        $set: {
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        },
+      });
+
+      monthCounter++;
+    }
+
+    return res.status(200).json({
+      message: "Timestamps added to all existing users.",
+    });
+  } catch (error) {
+    console.error("Error adding timestamps to users:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -2,23 +2,26 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const UserSchema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  phone: { type: Number, required: true },
-  password: { type: String, required: true },
-  addresses: [{ type: Schema.Types.ObjectId, ref: "Address" }],
-  orders: [{ type: Schema.Types.ObjectId, ref: "Order" }],
-  // orderHistory: [{ type: Schema.Types.ObjectId, ref: "OrderHistory" }],
-  isdeleted: {
-    type: Boolean,
-    default: false,
+const UserSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: Number, required: true },
+    password: { type: String, required: true },
+    addresses: [{ type: Schema.Types.ObjectId, ref: "Address" }],
+    orders: [{ type: Schema.Types.ObjectId, ref: "Order" }],
+    // orderHistory: [{ type: Schema.Types.ObjectId, ref: "OrderHistory" }],
+    isdeleted: {
+      type: Boolean,
+      default: false,
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { timestamps: true }
+);
 
 const virtual = UserSchema.virtual("id");
 
