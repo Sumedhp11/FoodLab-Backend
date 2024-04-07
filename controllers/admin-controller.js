@@ -121,6 +121,7 @@ export const GetAllOrderChartData = async (req, res) => {
     const orders = await Order.find();
 
     const monthlyOrderTotals = {};
+    const currentYear = new Date().getFullYear();
 
     orders.forEach((order) => {
       const orderDate = new Date(order.createdAt);
@@ -129,21 +130,24 @@ export const GetAllOrderChartData = async (req, res) => {
         year: "numeric",
       });
 
-      if (monthlyOrderTotals[monthYear]) {
-        monthlyOrderTotals[monthYear]++;
-      } else {
-        monthlyOrderTotals[monthYear] = 1;
+      if (!monthlyOrderTotals[monthYear]) {
+        monthlyOrderTotals[monthYear] = 0;
       }
+      monthlyOrderTotals[monthYear]++;
     });
 
-    const monthlyOrderChartData = Object.keys(monthlyOrderTotals).map(
-      (monthYear) => ({
-        monthYear,
-        totalOrders: monthlyOrderTotals[monthYear],
-      })
-    );
+    // Prepare chart data
+    const allMonthsChartData = [];
+    for (let i = 0; i < 12; i++) {
+      const monthYear = new Date(currentYear, i).toLocaleString("en-US", {
+        month: "long",
+        year: "numeric",
+      });
+      const totalOrders = monthlyOrderTotals[monthYear] || 0;
+      allMonthsChartData.push({ monthYear, totalOrders });
+    }
 
-    return res.status(200).json(monthlyOrderChartData);
+    return res.status(200).json(allMonthsChartData);
   } catch (error) {
     console.error("Error fetching order data:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -153,29 +157,40 @@ export const getNumberOfUserPerMonth = async (req, res) => {
   try {
     const users = await User.find({ isAdmin: false });
 
+    // Initialize user count per month
     const userCountPerMonth = {};
+    const currentYear = new Date().getFullYear();
 
+    // Calculate user counts for each month
     users.forEach((user) => {
-      const month = new Date(user.createdAt).getMonth();
-      const monthName = getAllMonths()[month];
-      if (!userCountPerMonth[monthName]) {
-        userCountPerMonth[monthName] = 1;
-      } else {
-        userCountPerMonth[monthName]++;
+      const month = new Date(user.createdAt).toLocaleString("en-US", {
+        month: "long",
+        year: "numeric",
+      });
+      if (!userCountPerMonth[month]) {
+        userCountPerMonth[month] = 0;
       }
+      userCountPerMonth[month]++;
     });
 
-    const result = Object.keys(userCountPerMonth).map((month) => ({
-      month: month,
-      count: userCountPerMonth[month],
-    }));
+    // Prepare chart data
+    const allMonthsUserData = [];
+    for (let i = 0; i < 12; i++) {
+      const monthYear = new Date(currentYear, i).toLocaleString("en-US", {
+        month: "long",
+        year: "numeric",
+      });
+      const count = userCountPerMonth[monthYear] || 0;
+      allMonthsUserData.push({ month: monthYear, count });
+    }
 
-    return res.status(200).json(result);
+    return res.status(200).json(allMonthsUserData);
   } catch (error) {
-    console.error("Error fetching order data:", error);
+    console.error("Error fetching user data:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 export const getNumberOfDeliveryStatusOrders = async (req, res) => {
   try {
     const orders = await Order.find();
