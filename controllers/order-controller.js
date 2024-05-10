@@ -4,7 +4,10 @@ export const getOrderByUserId = async (req, res) => {
   const { userId } = req.query;
   console.log(userId, 5);
   try {
-    const order = await Order.find({ userId: userId }).populate([
+    const order = await Order.find({
+      userId: userId,
+      deliveryStatus: "placed",
+    }).populate([
       {
         path: "dishes.dish",
         model: "Dish",
